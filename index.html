@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Contabilidad Básica</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5f4;--panel:#fff;--ink:#1a2b3c;--mute:#5c6d7c;--line:#d3dcd8;--acc:#1d6b4f;--acc-soft:#dcefe7;--track:#dfe6e3}
+@media (prefers-color-scheme:dark){:root{--bg:#101a17;--panel:#16231f;--ink:#e6efeb;--mute:#97aaa2;--line:#2a3d36;--acc:#4fc79a;--acc-soft:#1d3a30;--track:#2a3d36}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:24px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+h1,h2,h3{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;line-height:1.2}
+h1{font-size:22px;margin:0 0 14px}
+.bar{height:8px;background:var(--track);border-radius:4px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.total{font-size:14px;color:var(--mute);margin:6px 0 20px}
+.mod{margin:0 0 18px}
+.mod h3{font-size:16px;margin:0 0 6px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+.lec{display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;color:inherit;font:inherit;font-size:15px;padding:8px 8px 8px 10px;cursor:pointer;border-radius:0 6px 6px 0}
+.lec:hover{background:var(--acc-soft)}
+.lec[aria-current=true]{border-left-color:var(--acc);background:var(--acc-soft);font-weight:600}
+.lec .mini{height:4px;margin-top:6px}
+.lec.done::after{content:" ✔";color:var(--acc)}
+.futuro{font-size:14px;color:var(--mute);border:1px dashed var(--line);border-radius:6px;padding:8px 10px;margin-top:6px}
+main{padding:32px clamp(18px,4vw,56px) 64px;max-width:900px;width:100%}
+.ruta{color:var(--mute);font-size:15px;margin:0 0 6px}
+main h2{font-size:clamp(26px,4vw,34px);margin:0 0 18px}
+.video{aspect-ratio:16/9;background:#0b1512;border-radius:8px;overflow:hidden;display:grid;place-items:center;color:#9fb5ad}
+.video video{width:100%;height:100%;display:block}
+.progreso{margin:18px 0}
+.progreso label{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-bottom:6px}
+.teoria{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px 22px;max-width:70ch}
+.teoria h3{font-size:18px;margin:0 0 8px}
+.teoria p{margin:0}
+.acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button.btn{font:600 16px "IBM Plex Sans",sans-serif;padding:11px 18px;border-radius:7px;border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
+@media (prefers-color-scheme:dark){button.btn{color:#08261c}}
+button.btn.sec{background:none;color:var(--acc)}
+button.btn:disabled{opacity:.45;cursor:default}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@media(max-width:820px){.app{grid-template-columns:1fr}aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside aria-label="Índice del curso">
+    <h1 id="tituloCurso"></h1>
+    <div class="bar"><i id="barTotal"></i></div>
+    <p class="total" id="txtTotal"></p>
+    <nav id="indice"></nav>
+  </aside>
+  <main id="leccion" aria-live="polite"></main>
+</div>
+
+<script>
+/* =====================================================
+   ARREGLO DEL CURSO (única fuente de verdad)
+   Para agregar una lección: copia un bloque dentro de "lecciones".
+   El índice, la barra de progreso y los botones se actualizan solos.
+   "video": ruta al archivo (ej. "videos/leccion-1-1.mp4") o enlace del reproductor.
+   Déjalo en "" mientras no esté subido.
+   ===================================================== */
+const CURSO = {
+  titulo: "Contabilidad Básica",
+  modulos: [
+    {
+      id: "m1",
+      titulo: "Módulo 1: Fundamentos Contables",
+      lecciones: [
+        { id: "1-1", titulo: "Lección 1.1: Conceptos Básicos y Naturaleza Contable",
+          descripcion: "La contabilidad es el sistema que registra, clasifica y resume las operaciones económicas de una entidad para tomar decisiones. Veremos qué es, para qué sirve y quiénes usan su información.",
+          video: "", duracion: "" },
+        { id: "1-2", titulo: "Lección 1.2: La Ecuación Patrimonial (Activo, Pasivo y Patrimonio)",
+          descripcion: "Todo lo que una empresa tiene (activo) se financia con deudas (pasivo) o con aportes de sus dueños (patrimonio): Activo = Pasivo + Patrimonio. Esta igualdad es la base de todo registro contable.",
+          video: "", duracion: "" },
+        { id: "1-3", titulo: "Lección 1.3: Teoría del Cargo y del Abono",
+          descripcion: "Cada operación se registra en dos lados: el cargo (debe) y el abono (haber). Aprenderás qué cuentas aumentan o disminuyen con cada uno y por qué el total de cargos siempre iguala al de abonos.",
+          video: "", duracion: "" }
+      ],
+      futuro: false
+    },
+    {
+      id: "m2",
+      titulo: "Módulo 2: Registro de Operaciones",
+      lecciones: [
+        { id: "2-1", titulo: "Lección 2.1: Libro Diario y Libro Mayor",
+          descripcion: "El Libro Diario registra las operaciones en orden cronológico; el Libro Mayor las agrupa por cuenta. Practicaremos el paso de uno a otro con ejemplos.",
+          video: "", duracion: "" }
+        /* ← aquí van las próximas lecciones del Módulo 2 */
+      ],
+      futuro: true   // muestra el espacio "Próximamente" al final del módulo
+    }
+  ]
+};
+
+/* ---------- Progreso (se guarda en el navegador del alumno) ---------- */
+const KEY = "progreso-contabilidad-basica";
+const todas = CURSO.modulos.flatMap(m => m.lecciones.map(l => ({...l, modulo: m.titulo})));
+let prog = {};
+try { prog = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) {} };
+const pctDe = id => (prog[id] && prog[id].pct) || 0;
+const hecha = id => !!(prog[id] && prog[id].done);
+const $ = id => document.getElementById(id);
+
+/* ---------- Índice lateral ---------- */
+function dibujarIndice(actual) {
+  $("tituloCurso").textContent = CURSO.titulo;
+  $("indice").innerHTML = CURSO.modulos.map(m => `
+    <div class="mod"><h3>${m.titulo}</h3>
+    ${m.lecciones.map(l => `
+      <button class="lec ${hecha(l.id) ? "done" : ""}" data-id="${l.id}" ${l.id === actual ? 'aria-current="true"' : ""}>
+        ${l.titulo}<div class="bar mini"><i style="width:${hecha(l.id) ? 100 : pctDe(l.id)}%"></i></div>
+      </button>`).join("")}
+    ${m.futuro ? '<div class="futuro">Próximas lecciones de este módulo</div>' : ""}
+    </div>`).join("");
+  const hechas = todas.filter(l => hecha(l.id)).length;
+  const pct = Math.round(hechas / todas.length * 100);
+  $("barTotal").style.width = pct + "%";
+  $("txtTotal").textContent = `${hechas} de ${todas.length} lecciones completadas (${pct}%)`;
+}
+
+/* ---------- Lección ---------- */
+function mostrar(id) {
+  const i = Math.max(0, todas.findIndex(l => l.id === id));
+  const l = todas[i];
+  const p = hecha(l.id) ? 100 : pctDe(l.id);
+  $("leccion").innerHTML = `
+    <p class="ruta">${l.modulo}${l.duracion ? " · " + l.duracion : ""}</p>
+    <h2>${l.titulo}</h2>
+    <div class="video">${l.video
+      ? `<video id="vid" controls preload="metadata" playsinline controlsList="nodownload" src="${l.video}"></video>`
+      : "<span>El video de esta lección estará disponible pronto.</span>"}</div>
+    <div class="progreso"><label><span>Progreso de la lección</span><span id="pTxt">${p}%</span></label>
+      <div class="bar"><i id="pBar" style="width:${p}%"></i></div></div>
+    <section class="teoria"><h3>De qué trata</h3><p>${l.descripcion}</p></section>
+    <div class="acciones">
+      <button class="btn sec" id="ant" ${i === 0 ? "disabled" : ""}>Lección anterior</button>
+      <button class="btn" id="hecha">${hecha(l.id) ? "Lección completada" : "Marcar como completada"}</button>
+      <button class="btn sec" id="sig" ${i === todas.length - 1 ? "disabled" : ""}>Siguiente lección</button>
+    </div>`;
+  dibujarIndice(l.id);
+
+  const poner = v => { $("pBar").style.width = v + "%"; $("pTxt").textContent = v + "%"; };
+  const vid = $("vid");
+  if (vid) vid.addEventListener("timeupdate", () => {
+    if (!vid.duration || hecha(l.id)) return;
+    const v = Math.round(vid.currentTime / vid.duration * 100);
+    if (v > pctDe(l.id)) { prog[l.id] = {pct: v, done: v >= 95}; guardar(); poner(v); if (v >= 95) dibujarIndice(l.id); }
+  });
+  $("hecha").onclick = () => { prog[l.id] = {pct: 100, done: true}; guardar(); mostrar(l.id); };
+  $("ant").onclick = () => { location.hash = todas[i - 1].id; };
+  $("sig").onclick = () => { location.hash = todas[i + 1].id; };
+}
+
+$("indice").addEventListener("click", e => {
+  const b = e.target.closest(".lec"); if (b) location.hash = b.dataset.id;
+});
+window.addEventListener("hashchange", () => mostrar(location.hash.slice(1)));
+mostrar(location.hash.slice(1) || todas[0].id);
+</script>
+</body>
+</html>
