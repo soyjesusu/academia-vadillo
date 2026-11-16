@@ -4,181 +4,132 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Contabilidad Básica</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<title>Ingresar - Academia Vadillo</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f2f5f4;--panel:#fff;--ink:#1a2b3c;--mute:#5c6d7c;--line:#d3dcd8;--acc:#1d6b4f;--acc-soft:#dcefe7;--track:#dfe6e3}
-@media (prefers-color-scheme:dark){:root{--bg:#101a17;--panel:#16231f;--ink:#e6efeb;--mute:#97aaa2;--line:#2a3d36;--acc:#4fc79a;--acc-soft:#1d3a30;--track:#2a3d36}}
+:root{--bg:#f2f5f4;--panel:#fff;--ink:#1a2b3c;--mute:#5c6d7c;--line:#d3dcd8;--acc:#1d6b4f;--acc2:#154f3a;--warn:#b4232a}
+@media (prefers-color-scheme:dark){:root{--bg:#101a17;--panel:#16231f;--ink:#e6efeb;--mute:#97aaa2;--line:#2a3d36;--acc:#4fc79a;--acc2:#7ad8b4;--warn:#ff8a8f}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "IBM Plex Sans",system-ui,sans-serif}
-.app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
-aside{background:var(--panel);border-right:1px solid var(--line);padding:24px 18px;position:sticky;top:0;height:100vh;overflow:auto}
-h1,h2,h3{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;line-height:1.2}
-h1{font-size:22px;margin:0 0 14px}
-.bar{height:8px;background:var(--track);border-radius:4px;overflow:hidden}
-.bar>i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
-.total{font-size:14px;color:var(--mute);margin:6px 0 20px}
-.mod{margin:0 0 18px}
-.mod h3{font-size:16px;margin:0 0 6px;padding-bottom:6px;border-bottom:2px solid var(--line)}
-.lec{display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;color:inherit;font:inherit;font-size:15px;padding:8px 8px 8px 10px;cursor:pointer;border-radius:0 6px 6px 0}
-.lec:hover{background:var(--acc-soft)}
-.lec[aria-current=true]{border-left-color:var(--acc);background:var(--acc-soft);font-weight:600}
-.lec .mini{height:4px;margin-top:6px}
-.lec.done::after{content:" ✔";color:var(--acc)}
-.futuro{font-size:14px;color:var(--mute);border:1px dashed var(--line);border-radius:6px;padding:8px 10px;margin-top:6px}
-main{padding:32px clamp(18px,4vw,56px) 64px;max-width:900px;width:100%}
-.ruta{color:var(--mute);font-size:15px;margin:0 0 6px}
-main h2{font-size:clamp(26px,4vw,34px);margin:0 0 18px}
-.video{aspect-ratio:16/9;background:#0b1512;border-radius:8px;overflow:hidden;display:grid;place-items:center;color:#9fb5ad}
-.video video,.video iframe{width:100%;height:100%;display:block;border:0}
-.abrir{font-size:14px;color:var(--mute);margin:8px 0 0}.abrir a{color:var(--acc)}
-.progreso{margin:18px 0}
-.progreso label{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-bottom:6px}
-.teoria{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px 22px;max-width:70ch}
-.teoria h3{font-size:18px;margin:0 0 8px}
-.teoria p{margin:0}
-.acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-button.btn{font:600 16px "IBM Plex Sans",sans-serif;padding:11px 18px;border-radius:7px;border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}
-@media (prefers-color-scheme:dark){button.btn{color:#08261c}}
-button.btn.sec{background:none;color:var(--acc)}
-button.btn:disabled{opacity:.45;cursor:default}
-button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-@media(max-width:820px){.app{grid-template-columns:1fr}aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font:17px/1.5 "IBM Plex Sans",system-ui,sans-serif;padding:18px}
+.card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:28px 24px}
+h1{font:600 26px/1.2 "IBM Plex Serif",Georgia,serif;margin:0 0 6px}
+p.sub{margin:0 0 18px;color:var(--mute);font-size:15px}
+label{display:block;font-weight:600;margin:12px 0 4px;font-size:15px}
+input{width:100%;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button.main{width:100%;margin-top:18px;padding:13px;border:0;border-radius:7px;background:var(--acc);color:#fff;font:600 17px "IBM Plex Sans",sans-serif;cursor:pointer}
+@media (prefers-color-scheme:dark){button.main{color:#08261c}}
+button.main:hover{background:var(--acc2)}button.main:disabled{opacity:.6;cursor:wait}
+button.link{background:none;border:0;color:var(--acc);font:inherit;font-size:15px;cursor:pointer;padding:0;margin-top:14px;text-decoration:underline}
+#msg{margin-top:14px;font-size:15px;font-weight:600}
+#msg.err{color:var(--warn)}#msg.ok{color:var(--acc)}
+.cursos a{display:block;margin-top:10px;padding:13px;border:1px solid var(--acc);border-radius:7px;color:var(--acc);text-decoration:none;font-weight:600;text-align:center}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<div class="app">
-  <aside aria-label="Índice del curso">
-    <h1 id="tituloCurso"></h1>
-    <div class="bar"><i id="barTotal"></i></div>
-    <p class="total" id="txtTotal"></p>
-    <nav id="indice"></nav>
-  </aside>
-  <main id="leccion" aria-live="polite"></main>
-</div>
+<main class="card">
+  <h1>Academia Vadillo</h1>
+  <p class="sub">Ingresa con tu correo y la clave que creaste.</p>
 
+  <form id="f" novalidate>
+    <label for="email">Correo</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="clave">Clave</label>
+    <input id="clave" type="password" autocomplete="current-password" required>
+    <button class="main" id="btn" type="submit">Entrar</button>
+    <button class="link" id="olvide" type="button">Olvidé mi clave o aún no la he creado</button>
+  </form>
+
+  <div id="elegir" class="hidden">
+    <p class="sub" style="margin-top:6px">Elige tu curso:</p>
+    <div class="cursos" id="lista"></div>
+    <button class="link" id="salir" type="button">Cerrar sesión</button>
+  </div>
+
+  <div id="msg" role="status"></div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script>
-/* =====================================================
-   ARREGLO DEL CURSO (única fuente de verdad)
-   Para agregar una lección: copia un bloque dentro de "lecciones".
-   El índice, la barra de progreso y los botones se actualizan solos.
-   "video": ruta al archivo (ej. "videos/leccion-1-1.mp4") o enlace del reproductor.
-   Déjalo en "" mientras no esté subido.
-   ===================================================== */
-const CURSO = {
-  titulo: "Contabilidad Básica",
-  modulos: [
-    {
-      id: "m1",
-      titulo: "Módulo 1: Fundamentos Contables",
-      lecciones: [
-        { id: "1-1", titulo: "Lección 1.1: Conceptos Básicos y Naturaleza Contable",
-          descripcion: "La contabilidad es el sistema que registra, clasifica y resume las operaciones económicas de una entidad para tomar decisiones. Veremos qué es, para qué sirve y quiénes usan su información.",
-          video: "https://www.vadillo.online/5f6432a4", duracion: "" },
-        { id: "1-2", titulo: "Lección 1.2: La Ecuación Patrimonial (Activo, Pasivo y Patrimonio)",
-          descripcion: "Todo lo que una empresa tiene (activo) se financia con deudas (pasivo) o con aportes de sus dueños (patrimonio): Activo = Pasivo + Patrimonio. Esta igualdad es la base de todo registro contable.",
-          video: "https://www.vadillo.online/5f6432a4-fe34b91a", duracion: "" }
-      ]
-    },
-    {
-      id: "m2",
-      titulo: "Módulo 2: Registro de Operaciones",
-      lecciones: [
-        { id: "2-1", titulo: "Lección 2.1: Libro Diario y Libro Mayor",
-          descripcion: "El Libro Diario registra las operaciones en orden cronológico; el Libro Mayor las agrupa por cuenta. Practicaremos el paso de uno a otro con ejemplos.",
-          video: "https://www.vadillo.online/5f6432a4-fe34b91a-23b58a5f", duracion: "" },
-        { id: "2-2", titulo: "Lección 2.2: (título por definir)",
-          descripcion: "Descripción por completar.",
-          video: "https://www.vadillo.online/5f6432a4-fe34b91a-23b58a5f-551f65ef", duracion: "" },
-        { id: "2-3", titulo: "Lección 2.3: (título por definir)",
-          descripcion: "Descripción por completar.",
-          video: "https://www.vadillo.online/5f6432a4-fe34b91a-23b58a5f-551f65ef-d6890bc0", duracion: "" }
-        /* ← aquí van las próximas lecciones del Módulo 2 */
-      ]
-    },
-    {
-      id: "m3",
-      titulo: "Evaluación final",
-      lecciones: [
-        // proximamente:true = aparece en el índice, pero sin enlace y fuera del conteo de progreso.
-        // Cuando esté listo el quiz, cambia a false y agrega su video/enlace.
-        { id: "quiz", titulo: "Quiz del curso", descripcion: "", video: "", proximamente: true }
-      ]
-    }
-  ]
+const firebaseConfig = {
+  apiKey: "AIzaSyAbHMbkIZi7_2zh1tkl2rVopAr0bsAzcfU",
+  authDomain: "academiavadillo.firebaseapp.com",
+  projectId: "academiavadillo",
+  storageBucket: "academiavadillo.firebasestorage.app",
+  messagingSenderId: "105199417873",
+  appId: "1:105199417873:web:519b1901bb35acf3390fb0"
 };
-
-/* ---------- Progreso (se guarda en el navegador del alumno) ---------- */
-const KEY = "progreso-contabilidad-basica";
-const todas = CURSO.modulos.flatMap(m => m.lecciones.filter(l => !l.proximamente).map(l => ({...l, modulo: m.titulo})));
-let prog = {};
-try { prog = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) {} };
-const pctDe = id => (prog[id] && prog[id].pct) || 0;
-const hecha = id => !!(prog[id] && prog[id].done);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth(), db = firebase.firestore();
 const $ = id => document.getElementById(id);
 
-/* ---------- Índice lateral ---------- */
-function dibujarIndice(actual) {
-  $("tituloCurso").textContent = CURSO.titulo;
-  $("indice").innerHTML = CURSO.modulos.map(m => `
-    <div class="mod"><h3>${m.titulo}</h3>
-    ${m.lecciones.map(l => l.proximamente ? `<div class="futuro">${l.titulo} (próximamente)</div>` : `
-      <button class="lec ${hecha(l.id) ? "done" : ""}" data-id="${l.id}" ${l.id === actual ? 'aria-current="true"' : ""}>
-        ${l.titulo}<div class="bar mini"><i style="width:${hecha(l.id) ? 100 : pctDe(l.id)}%"></i></div>
-      </button>`).join("")}
-    
-    </div>`).join("");
-  const hechas = todas.filter(l => hecha(l.id)).length;
-  const pct = Math.round(hechas / todas.length * 100);
-  $("barTotal").style.width = pct + "%";
-  $("txtTotal").textContent = `${hechas} de ${todas.length} lecciones completadas (${pct}%)`;
+/* Valor guardado en "cursos" (Firestore) → página y nombre del curso */
+const CURSOS = {
+  "contabilidad": { pagina: "contabilidad.html", nombre: "Contabilidad Básica" }
+  // "cashea": { pagina: "cashea.html", nombre: "Cashea de Vadillo" },
+};
+
+const msg = (t, tipo) => { $("msg").textContent = t || ""; $("msg").className = tipo || ""; };
+
+/* Lee la inscripción del alumno y lo manda a su curso */
+async function entrar(user) {
+  const email = (user.email || "").trim().toLowerCase();
+  let snap = await db.collection("alumnos").doc(email).get();
+  if (!snap.exists && user.email !== email) snap = await db.collection("alumnos").doc(user.email).get();
+  const lista = snap.exists && Array.isArray(snap.data().cursos) ? snap.data().cursos : [];
+  const activos = lista.map(c => String(c).trim().toLowerCase()).filter(c => CURSOS[c]);
+
+  if (!activos.length) {
+    await auth.signOut();
+    msg("Tu cuenta existe, pero aún no tienes un curso activo. Si ya pagaste, escríbenos para activarlo.", "err");
+    return;
+  }
+  if (activos.length === 1) { location.href = CURSOS[activos[0]].pagina; return; }
+  $("f").classList.add("hidden"); $("elegir").classList.remove("hidden"); msg("");
+  $("lista").innerHTML = activos.map(c => `<a href="${CURSOS[c].pagina}">${CURSOS[c].nombre}</a>`).join("");
 }
 
-/* ---------- Lección ---------- */
-const esArchivo = u => /\.(mp4|webm|ogg)(\?|#|$)/i.test(u);
-function reproductor(u) {
-  if (!u) return "<span>El video de esta lección estará disponible pronto.</span>";
-  return esArchivo(u)
-    ? `<video id="vid" controls preload="metadata" playsinline controlsList="nodownload" src="${u}"></video>`
-    : `<iframe src="${u}" title="Video de la lección" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
-}
-function mostrar(id) {
-  const i = Math.max(0, todas.findIndex(l => l.id === id));
-  const l = todas[i];
-  const p = hecha(l.id) ? 100 : pctDe(l.id);
-  $("leccion").innerHTML = `
-    <p class="ruta">${l.modulo}${l.duracion ? " · " + l.duracion : ""}</p>
-    <h2>${l.titulo}</h2>
-    <div class="video">${reproductor(l.video)}</div>
-    ${l.video && !esArchivo(l.video) ? `<p class="abrir">¿No carga el video? <a href="${l.video}" target="_blank" rel="noopener">Ábrelo en una pestaña nueva</a>. En esta modalidad marca la lección como completada al terminar.</p>` : ""}
-    <div class="progreso"><label><span>Progreso de la lección</span><span id="pTxt">${p}%</span></label>
-      <div class="bar"><i id="pBar" style="width:${p}%"></i></div></div>
-    <section class="teoria"><h3>De qué trata</h3><p>${l.descripcion}</p></section>
-    <div class="acciones">
-      <button class="btn sec" id="ant" ${i === 0 ? "disabled" : ""}>Lección anterior</button>
-      <button class="btn" id="hecha">${hecha(l.id) ? "Lección completada" : "Marcar como completada"}</button>
-      <button class="btn sec" id="sig" ${i === todas.length - 1 ? "disabled" : ""}>Siguiente lección</button>
-    </div>`;
-  dibujarIndice(l.id);
+/* Si ya había sesión iniciada */
+auth.onAuthStateChanged(u => { if (u && !$("btn").disabled) entrar(u).catch(() => {}); });
 
-  const poner = v => { $("pBar").style.width = v + "%"; $("pTxt").textContent = v + "%"; };
-  const vid = $("vid");
-  if (vid) vid.addEventListener("timeupdate", () => {
-    if (!vid.duration || hecha(l.id)) return;
-    const v = Math.round(vid.currentTime / vid.duration * 100);
-    if (v > pctDe(l.id)) { prog[l.id] = {pct: v, done: v >= 95}; guardar(); poner(v); if (v >= 95) dibujarIndice(l.id); }
-  });
-  $("hecha").onclick = () => { prog[l.id] = {pct: 100, done: true}; guardar(); mostrar(l.id); };
-  $("ant").onclick = () => { location.hash = todas[i - 1].id; };
-  $("sig").onclick = () => { location.hash = todas[i + 1].id; };
-}
-
-$("indice").addEventListener("click", e => {
-  const b = e.target.closest(".lec"); if (b) location.hash = b.dataset.id;
+$("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = $("email").value.trim(), clave = $("clave").value;
+  if (!email || !clave) return msg("Escribe tu correo y tu clave.", "err");
+  $("btn").disabled = true; msg("Verificando…", "ok");
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, clave);
+    await entrar(cred.user);
+  } catch (err) {
+    const t = {
+      "auth/invalid-credential": "Correo o clave incorrectos.",
+      "auth/wrong-password": "Correo o clave incorrectos.",
+      "auth/user-not-found": "No encontramos una cuenta con ese correo.",
+      "auth/invalid-email": "El correo no es válido.",
+      "auth/too-many-requests": "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
+      "permission-denied": "No se pudo leer tu inscripción (permisos). Avísanos."
+    };
+    msg(t[err.code] || "No se pudo ingresar: " + (err.code || err.message), "err");
+  }
+  $("btn").disabled = false;
 });
-window.addEventListener("hashchange", () => mostrar(location.hash.slice(1)));
-mostrar(location.hash.slice(1) || todas[0].id);
+
+/* Crear o recuperar clave: envía un correo con el enlace */
+$("olvide").addEventListener("click", async () => {
+  const email = $("email").value.trim();
+  if (!email) return msg("Escribe tu correo arriba y vuelve a pulsar este enlace.", "err");
+  try {
+    await auth.sendPasswordResetEmail(email);
+    msg("Si ese correo está registrado, te enviamos un enlace para crear o cambiar tu clave. Revisa también el spam.", "ok");
+  } catch (err) { msg("No se pudo enviar el correo. Verifica que esté bien escrito.", "err"); }
+});
+
+$("salir").addEventListener("click", async () => {
+  await auth.signOut(); location.reload();
+});
 </script>
 </body>
 </html>
