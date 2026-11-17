@@ -59,6 +59,7 @@ button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 <!-- CONTENEDOR PRINCIPAL DEL CURSO (Oculto hasta validar) -->
 <div class="app" id="app-curso" style="display: none;">
   <aside aria-label="Índice del curso">
+    <p style="margin:0 0 14px;font-size:14px"><a href="index.html" style="color:var(--acc)">← Mis cursos</a> &nbsp;·&nbsp; <a href="#" id="cerrarSesion" style="color:var(--acc)">Cerrar sesión</a></p>
     <h1 id="tituloCurso"></h1>
     <div class="bar"><i id="barTotal"></i></div>
     <p class="total" id="txtTotal"></p>
@@ -144,9 +145,9 @@ function inicializarSistemaCurso() {
             { id: "2-1", titulo: "Lección 2.1: Libro Diario y Libro Mayor",
               descripcion: "El Libro Diario registra las operaciones en orden cronológico; el Libro Mayor las agrupa por cuenta. Practicaremos el paso de uno a otro con ejemplos.",
               video: "https://www.vadillo.online/5f6432a4-fe34b91a-23b58a5f", duracion: "" },
-            { id: "2-2", titulo: "Lección 2.2: (título por definir)", descripcion: "Descripción por completar.",
+            { id: "2-2", titulo: "Lección 2.2: Clasificación de las Cuentas", descripcion: "Las cuentas se organizan en cinco grandes grupos: Activo, Pasivo, Patrimonio, Ingresos y Gastos. Aprenderás a identificar a qué grupo pertenece cada cuenta antes de registrarla.",
               video: "https://www.vadillo.online/5f6432a4-fe34b91a-23b58a5f-551f65ef", duracion: "" },
-            { id: "2-3", titulo: "Lección 2.3: (título por definir)", descripcion: "Descripción por completar.",
+            { id: "2-3", titulo: "Lección 2.3: Ejercicios", descripcion: "Práctica guiada para aplicar lo visto en el módulo.",
               video: "https://www.vadillo.online/5f6432a4-fe34b91a-23b58a5f-551f65ef-d6890bc0", duracion: "" }
           ]
         },
@@ -232,6 +233,11 @@ function inicializarSistemaCurso() {
     window.addEventListener("hashchange", () => mostrar(location.hash.slice(1)));
     mostrar(location.hash.slice(1) || todas[0].id);
 }
+
+document.getElementById('cerrarSesion').addEventListener('click', function (e) {
+    e.preventDefault();
+    auth.signOut().then(function () { window.location.href = "index.html"; });
+});
 </script>
 </body>
 </html>
