@@ -24,6 +24,7 @@ button.link{background:none;border:0;color:var(--acc);font:inherit;font-size:15p
 #msg{margin-top:14px;font-size:15px;font-weight:600}
 #msg.err{color:var(--warn)}#msg.ok{color:var(--acc)}
 .cursos a{display:block;margin-top:10px;padding:13px;border:1px solid var(--acc);border-radius:7px;color:var(--acc);text-decoration:none;font-weight:600;text-align:center}
+.cursos a:hover{background:var(--acc);color:#fff}
 .hidden{display:none}
 </style>
 </head>
@@ -44,7 +45,7 @@ button.link{background:none;border:0;color:var(--acc);font:inherit;font-size:15p
   <div id="elegir" class="hidden">
     <p class="sub" style="margin-top:6px">Elige tu curso:</p>
     <div class="cursos" id="lista"></div>
-    <button class="link" id="salir" type="button">Cerrar sesión</button>
+    <button class="link" id="salir" type="button" style="margin-top: 20px;">Cerrar sesión</button>
   </div>
 
   <div id="msg" role="status"></div>
@@ -66,15 +67,17 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(), db = firebase.firestore();
 const $ = id => document.getElementById(id);
 
-/* Valor guardado en "cursos" (Firestore) → página y nombre del curso */
+/* Catálogo de cursos disponibles en la academia */
 const CURSOS = {
-  "contabilidad": { pagina: "contabilidad.html", nombre: "Contabilidad Básica" }
-  // "cashea": { pagina: "cashea.html", nombre: "Cashea de Vadillo" },
+  "contabilidad": { pagina: "contabilidad.html", nombre: "Contabilidad Básica" },
+  "cashea": { pagina: "cashea.html", nombre: "Cashea de Vadillo" }
+  // "excel": { pagina: "excel.html", nombre: "Excel para Contadores" },
+  // "contribuyente ordinario especial": { pagina: "contribuyente.html", nombre: "Contribuyente Ordinario y Especial" }
 };
 
 const msg = (t, tipo) => { $("msg").textContent = t || ""; $("msg").className = tipo || ""; };
 
-/* Lee la inscripción del alumno y lo manda a su curso */
+/* Lee la inscripción del alumno y gestiona el acceso */
 async function entrar(user) {
   const email = (user.email || "").trim().toLowerCase();
   let snap = await db.collection("alumnos").doc(email).get();
@@ -87,8 +90,16 @@ async function entrar(user) {
     msg("Tu cuenta existe, pero aún no tienes un curso activo. Si ya pagaste, escríbenos para activarlo.", "err");
     return;
   }
-  if (activos.length === 1) { location.href = CURSOS[activos[0]].pagina; return; }
-  $("f").classList.add("hidden"); $("elegir").classList.remove("hidden"); msg("");
+  
+  // Si tiene un solo curso, entra directo. Si tiene varios (ej. contabilidad y cashea), muestra el selector unificado.
+  if (activos.length === 1) { 
+    location.href = CURSOS[activos[0]].pagina; 
+    return; 
+  }
+  
+  $("f").classList.add("hidden"); 
+  $("elegir").classList.remove("hidden"); 
+  msg("");
   $("lista").innerHTML = activos.map(c => `<a href="${CURSOS[c].pagina}">${CURSOS[c].nombre}</a>`).join("");
 }
 
@@ -113,11 +124,11 @@ $("f").addEventListener("submit", async e => {
       "permission-denied": "No se pudo leer tu inscripción (permisos). Avísanos."
     };
     msg(t[err.code] || "No se pudo ingresar: " + (err.code || err.message), "err");
+    $("btn").disabled = false;
   }
-  $("btn").disabled = false;
 });
 
-/* Crear o recuperar clave: envía un correo con el enlace */
+/* Recuperar clave */
 $("olvide").addEventListener("click", async () => {
   const email = $("email").value.trim();
   if (!email) return msg("Escribe tu correo arriba y vuelve a pulsar este enlace.", "err");
