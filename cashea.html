@@ -53,7 +53,7 @@ button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 <!-- PANTALLA DE CARGA Y VALIDACIÓN DE FIREBASE -->
 <div id="loader-seguridad" class="loader-pantalla">
     <div class="spinner"></div>
-    <p style="font-size: 15px; font-weight: 600; color: var(--mute);">Verificando acceso al curso de Cashea... (versión 1)</p>
+    <p style="font-size: 15px; font-weight: 600; color: var(--mute);">Verificando acceso al curso de Cashea...</p>
 </div>
 
 <!-- CONTENEDOR PRINCIPAL DEL CURSO (Oculto hasta validar) -->
@@ -94,7 +94,6 @@ auth.onAuthStateChanged(async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     const email = (user.email || "").trim().toLowerCase();
     try {
-        // El documento debe llamarse EXACTAMENTE como el correo (en minúsculas)
         let snap = await db.collection("alumnos").doc(email).get();
         if (!snap.exists && user.email !== email) snap = await db.collection("alumnos").doc(user.email).get();
         const d = snap.exists ? snap.data() : null;
@@ -106,8 +105,8 @@ auth.onAuthStateChanged(async (user) => {
         } else {
             const motivo = !snap.exists
                 ? 'No existe el registro "alumnos/' + email + '" en Firestore.'
-                : 'El registro existe, pero el campo "cursos" no es una lista que incluya "' + CURSO_ACTUAL + '".';
-            await auth.signOut();   // evita el bucle login <-> curso
+                : 'El registro existe, pero el campo "cursos" no incluye "' + CURSO_ACTUAL + '".';
+            await auth.signOut();
             alert("No tienes una inscripción activa para este curso.\n\n" + motivo);
             window.location.href = "index.html";
         }
@@ -120,7 +119,7 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 /* =====================================================
-   LÓGICA DEL CURSO Y RENDERIZADO (Diseño original)
+   LÓGICA DEL CURSO Y RENDERIZADO
    ===================================================== */
 function inicializarSistemaCurso() {
     const CURSO = {
@@ -128,18 +127,31 @@ function inicializarSistemaCurso() {
       modulos: [
         {
           id: "m1",
-          titulo: "Módulo 1: (título por definir)",
+          titulo: "Módulo 1: Introducción y Funcionamiento de Cashea",
           lecciones: [
-            { id: "1-1", titulo: "Lección 1.1: (título por definir)", descripcion: "Descripción por completar.",
-              video: "https://www.vadillo.online/05294911", duracion: "" },
-            { id: "1-2", titulo: "Lección 1.2: (título por definir)", descripcion: "Descripción por completar.",
-              video: "https://www.vadillo.online/05294911-f572e24a", duracion: "" },
-            { id: "1-3", titulo: "Lección 1.3: (título por definir)", descripcion: "Descripción por completar.",
-              video: "https://www.vadillo.online/2c57ae30", duracion: "" }
+            { 
+              id: "1-1", 
+              titulo: "Lección 1.1: ¿Qué es Cashea y cómo funciona en el comercio?", 
+              descripcion: "Conoce el modelo de negocio de Cashea, las ventajas para los comercios afiliados y cómo facilita el poder de compra a plazos de los clientes de forma segura.",
+              video: "https://www.vadillo.online/05294911", 
+              duracion: "" 
+            },
+            { 
+              id: "1-2", 
+              titulo: "Lección 1.2: Requisitos, Niveles y Líneas de Crédito", 
+              descripcion: "Analizamos cómo evalúan el perfil del usuario, los diferentes niveles dentro de la plataforma y el funcionamiento de la inicial y las cuotas restantes.",
+              video: "https://www.vadillo.online/05294911-f572e24a", 
+              duracion: "" 
+            },
+            { 
+              id: "1-3", 
+              titulo: "Lección 1.3: Registro Contable y Conciliación de Ventas Cashea", 
+              descripcion: "Aprende el paso a paso de cómo contabilizar correctamente las transacciones hechas a través de la aplicación, el tratamiento de la comisión y la conciliación de pagos.",
+              video: "https://www.vadillo.online/2c57ae30", 
+              duracion: "" 
+            }
           ]
         }
-        /* ← aquí irá el Módulo 2 cuando esté listo. Para un quiz final, agrega un módulo con
-           { id: "quiz", titulo: "Quiz del curso", descripcion: "", video: "", proximamente: true } */
       ]
     };
 
@@ -172,7 +184,6 @@ function inicializarSistemaCurso() {
       const l = todas[i];
       const p = hecha(l.id) ? 100 : pctDe(l.id);
       
-      // Renderizado del reproductor (soporta enlaces de Systeme.io con iframe o videos directos .mp4)
       let contenidoVideo = "<span>El video de esta lección estará disponible pronto.</span>";
       const esArchivo = /\.(mp4|webm|ogg)(\?|#|$)/i.test(l.video || "");
       if (l.video) {
