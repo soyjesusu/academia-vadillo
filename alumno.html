@@ -24,29 +24,31 @@ button.link{background:none;border:0;color:var(--acc);font:inherit;font-size:15p
 #msg{margin-top:14px;font-size:15px;font-weight:600}
 #msg.err{color:var(--warn)}#msg.ok{color:var(--acc)}
 .cursos a{display:block;margin-top:10px;padding:13px;border:1px solid var(--acc);border-radius:7px;color:var(--acc);text-decoration:none;font-weight:600;text-align:center}
-.cursos a:hover{background:var(--acc);color:#fff}
-@media (prefers-color-scheme:dark){.cursos a:hover{color:#08261c}}
 .hidden{display:none}
 </style>
 </head>
 <body>
 <main class="card">
   <h1>Academia Vadillo</h1>
-  <p class="sub">Ingresa con tu correo y la clave que creaste.</p>
+  <p class="sub" id="intro">Ingresa con tu correo y la clave que creaste.</p>
 
   <form id="f" novalidate>
     <label for="email">Correo</label>
     <input id="email" type="email" autocomplete="username" required>
     <label for="clave">Clave</label>
     <input id="clave" type="password" autocomplete="current-password" required>
+    <div id="rep" class="hidden"><label for="clave2">Repite tu clave</label>
+    <input id="clave2" type="password" autocomplete="new-password"></div>
     <button class="main" id="btn" type="submit">Entrar</button>
+    <button class="link" id="crear" type="button">Ya me validaron: crear mi clave</button><br>
     <button class="link" id="olvide" type="button">Olvidé mi clave o aún no la he creado</button>
   </form>
 
   <div id="elegir" class="hidden">
-    <p class="sub" style="margin-top:6px">Elige tu curso:</p>
+    <p class="sub" id="quien" style="margin-top:6px"></p>
+    <p class="sub" style="font-weight:600;color:var(--ink)">Tus cursos activos. Elige uno para entrar:</p>
     <div class="cursos" id="lista"></div>
-    <button class="link" id="salir" type="button" style="margin-top:20px">Cerrar sesión</button>
+    <button class="link" id="salir" type="button">Cerrar sesión</button>
   </div>
 
   <div id="msg" role="status"></div>
@@ -68,17 +70,18 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(), db = firebase.firestore();
 const $ = id => document.getElementById(id);
 
-/* Catálogo completo de los 4 cursos de la academia mapeados con sus archivos HTML */
+/* Valor guardado en "cursos" (Firestore) → página y nombre del curso */
 const CURSOS = {
   "contabilidad": { pagina: "contabilidad.html", nombre: "Contabilidad Básica" },
   "cashea": { pagina: "cashea.html", nombre: "Cashea de Vadillo" },
   "excel": { pagina: "excel.html", nombre: "Excel para Contadores" },
-  "contribuyente ordinario especial": { pagina: "contribuyente.html", nombre: "Contribuyente Ordinario y Especial" }
+  "contribuyentes": { pagina: "contribuyentes.html", nombre: "Contribuyente Ordinario y Especial" }
 };
 
+let modoCrear = false;
 const msg = (t, tipo) => { $("msg").textContent = t || ""; $("msg").className = tipo || ""; };
 
-/* Lee la inscripción del alumno y gestiona el acceso */
+/* Lee la inscripción del alumno y lo manda a su curso */
 async function entrar(user) {
   const email = (user.email || "").trim().toLowerCase();
   let snap = await db.collection("alumnos").doc(email).get();
@@ -91,8 +94,7 @@ async function entrar(user) {
     msg("Tu cuenta existe, pero aún no tienes un curso activo. Si ya pagaste, escríbenos para activarlo.", "err");
     return;
   }
-  if (activos.length === 1) { location.href = CURSOS[activos[0]].pagina; return; }
-  $("f").classList.add("hidden"); $("elegir").classList.remove("hidden"); msg("");
+  $("f").classList.add("hidden"); $("intro").classList.add("hidden"); $("elegir").classList.remove("hidden"); $("quien").textContent = "Sesión iniciada como " + email; msg("");
   $("lista").innerHTML = activos.map(c => `<a href="${CURSOS[c].pagina}">${CURSOS[c].nombre}</a>`).join("");
 }
 
@@ -105,7 +107,20 @@ $("f").addEventListener("submit", async e => {
   if (!email || !clave) return msg("Escribe tu correo y tu clave.", "err");
   $("btn").disabled = true; msg("Verificando…", "ok");
   try {
-    const cred = await auth.signInWithEmailAndPassword(email, clave);
+    let cred;
+    if (modoCrear) {
+      if (clave.length < 8) { msg("La clave debe tener mínimo 8 caracteres.", "err"); $("btn").disabled = false; return; }
+      if (clave !== $("clave2").value) { msg("Las claves no coinciden.", "err"); $("btn").disabled = false; return; }
+      try { cred = await auth.createUserWithEmailAndPassword(email, clave); }
+      catch (e) {
+        if (e.code === "auth/email-already-in-use") {
+          await auth.sendPasswordResetEmail(email, { url: location.origin + "/" });
+          msg("Tu correo ya tiene cuenta. Te enviamos un enlace para definir tu clave; revisa también el spam.", "ok");
+          $("btn").disabled = false; return;
+        }
+        throw e;
+      }
+    } else { cred = await auth.signInWithEmailAndPassword(email, clave); }
     await entrar(cred.user);
   } catch (err) {
     const t = {
@@ -113,6 +128,8 @@ $("f").addEventListener("submit", async e => {
       "auth/wrong-password": "Correo o clave incorrectos.",
       "auth/user-not-found": "No encontramos una cuenta con ese correo.",
       "auth/invalid-email": "El correo no es válido.",
+      "auth/weak-password": "La clave es muy débil. Usa al menos 8 caracteres.",
+      "auth/network-request-failed": "Falla de conexión. Intenta de nuevo.",
       "auth/too-many-requests": "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
       "permission-denied": "No se pudo leer tu inscripción (permisos). Avísanos."
     };
@@ -126,9 +143,18 @@ $("olvide").addEventListener("click", async () => {
   const email = $("email").value.trim();
   if (!email) return msg("Escribe tu correo arriba y vuelve a pulsar este enlace.", "err");
   try {
-    await auth.sendPasswordResetEmail(email);
+    await auth.sendPasswordResetEmail(email, { url: location.origin + "/" });
     msg("Si ese correo está registrado, te enviamos un enlace para crear o cambiar tu clave. Revisa también el spam.", "ok");
   } catch (err) { msg("No se pudo enviar el correo. Verifica que esté bien escrito.", "err"); }
+});
+
+$("crear").addEventListener("click", () => {
+  modoCrear = !modoCrear;
+  $("rep").classList.toggle("hidden", !modoCrear);
+  $("btn").textContent = modoCrear ? "Crear mi clave y entrar" : "Entrar";
+  $("crear").textContent = modoCrear ? "Ya tengo clave: volver a entrar" : "Ya me validaron: crear mi clave";
+  $("clave").autocomplete = modoCrear ? "new-password" : "current-password";
+  msg("");
 });
 
 $("salir").addEventListener("click", async () => {
