@@ -70,12 +70,12 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(), db = firebase.firestore();
 const $ = id => document.getElementById(id);
 
-/* Valor guardado en "cursos" (Firestore) → página y nombre del curso */
+/* Valor guardado en "cursos" (Firestore) → página y nombre del curso corregido */
 const CURSOS = {
   "contabilidad": { pagina: "contabilidad.html", nombre: "Contabilidad Básica" },
   "cashea": { pagina: "cashea.html", nombre: "Cashea de Vadillo" },
   "excel": { pagina: "excel.html", nombre: "Excel para Contadores" },
-  "contribuyentes": { pagina: "contribuyentes.html", nombre: "Contribuyente Ordinario y Especial" }
+  "contribuyente ordinario especial": { pagina: "contribuyente.html", nombre: "Contribuyente Ordinario y Especial" }
 };
 
 let modoCrear = false;
